@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<errno.h>
+#include<string.h>
+void Statistics(FILE* pf)
+{
+	int letter = 0;
+	int another = 0;
+	int digit = 0;
+	char c = 0;
+	while ((c = fgetc(pf)) != EOF)
+	{
+		putchar(c);/*打印出文本的字符，便于判断结果是否正确*/
+		if (c >= 48 && c <= 57)
+		{
+			digit++;
+		}
+		else if (c >= 65 && c <= 122)
+		{
+			letter++;
+		}
+		else if (c != '\n')
+		{
+			/*文本其他字符的个数*/
+			/*c ！= '\n’，防止看不见的换号符号也被计算到其它字符中（文本不止一行情况下）*/
+			another++;
+		}
+	}
+	/*判断是读取文本是出错还是文本已经读取完了*/
+	if (ferror(pf))
+	{
+		puts("error when reading\n");
+	}
+	else if (feof(pf))
+	{
+		/*文本已经读取完了*/
+		puts("\nEnd of file reached successfully");
+		printf("the number of digits ,letters and other character are:\n");
+		printf("%d %d %d ", digit, letter, another);
+	}
+}
+int main(void)
+{
+	FILE* pf = fopen("D:\\c-study\\wenben\\test.txt", "r");
+	if (pf == NULL)
+	{
+		printf("%s\n", strerror(errno));
+	}
+	else
+	{
+		Statistics(pf);
+	}
+	fclose(pf);
+	pf = NULL;
+	return 0;
+}
